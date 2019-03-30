@@ -1,3 +1,3 @@
-# dotpresent
+# react starter
 
-presentation machine for Nine Dot Arts
+A very simple react starter
