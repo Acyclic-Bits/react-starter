@@ -1,5 +1,6 @@
 const webpack = require('webpack');
-
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 module.exports = {
     entry: './src/index.js',
     module: {
@@ -14,16 +15,25 @@ module.exports = {
                 exclude: /node_modules/,
                 use: [
                     {
-                        loader: 'style-loader'
-                    },
-                    {
-                        loader: 'css-loader',
+                        loader: MiniCssExtractPlugin.loader,
                         options: {
-                            importLoaders: 1
+                            hot: true,
+                            reloadAll: true,
                         }
                     },
+                    "css-loader",
+                    "postcss-loader"
+                ]
+            },
+            {
+                test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
+                exclude: /node_modules/,
+                use: [
                     {
-                        loader: 'postcss-loader'
+                        loader: 'url-loader',
+                        options: {
+                            limit: 10000,
+                        }
                     }
                 ]
             }
@@ -35,10 +45,19 @@ module.exports = {
     output: {
         path: __dirname + '/dist',
         publicPath: '/',
-        filename: 'bundle.js'
+        filename: 'bundle.js',
+        chunkFilename: '[name].bundle.js'
     },
     plugins: [
-        new webpack.HotModuleReplacementPlugin()
+        new webpack.HotModuleReplacementPlugin(),
+        new MiniCssExtractPlugin({
+            filename: "app.css",
+            chunkFilename: "app.css"
+        }),
+        new HtmlWebpackPlugin({
+            template: "./src/index.html",
+            filename: "index.html"
+        })
     ],
     devServer: {
         contentBase: './dist',
